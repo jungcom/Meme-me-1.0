@@ -9,10 +9,10 @@
 import UIKit
 
 struct Meme{
-    var topText: String
-    var bottomText: String
-    var originalImage: UIImage
-    var memedImage: UIImage
+    let topText: String
+    let bottomText: String
+    let originalImage: UIImage
+    let memedImage: UIImage
 }
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
@@ -28,12 +28,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     var meme: Meme!
     let topTextFieldDel = TopTextFieldDelegate()
-    let memeTextAttributes:[String: Any] = [
-        NSAttributedStringKey.strokeColor.rawValue: UIColor.black,
-        NSAttributedStringKey.foregroundColor.rawValue: UIColor.white,
-        NSAttributedStringKey.font.rawValue: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!,
-        NSAttributedStringKey.strokeWidth.rawValue: -2,]
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,27 +39,49 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             image.backgroundColor = UIColor.black
         }
         
-        // MARK: Set Delegates and attributes
+        // MARK: Set Delegates
         topTextField.delegate = topTextFieldDel
         bottomTextField.delegate = topTextFieldDel
-        topTextField.defaultTextAttributes = memeTextAttributes
-        topTextField.textAlignment = NSTextAlignment.center
-        bottomTextField.defaultTextAttributes = memeTextAttributes
-        bottomTextField.textAlignment = NSTextAlignment.center
+        
+        // Set attributes for textfields
+        setAttributeForTextField(topTextField, defaultTextField: "TOP")
+        setAttributeForTextField(bottomTextField, defaultTextField: "BOTTOM")
+        
+    }
+    //MARK: Set attributes for TextFields
+    func setAttributeForTextField(_ textField: UITextField, defaultTextField: String){
+        let memeTextAttributes:[String: Any] = [
+            NSAttributedStringKey.strokeColor.rawValue: UIColor.black,
+            NSAttributedStringKey.foregroundColor.rawValue: UIColor.white,
+            NSAttributedStringKey.font.rawValue: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!,
+            NSAttributedStringKey.strokeWidth.rawValue: -2,]
+        
+        textField.defaultTextAttributes = memeTextAttributes
+        textField.text = defaultTextField
+        textField.textAlignment = .center
     }
 
     // MARK: Actions for camera and album button
     @IBAction func openAlbum(_ sender: Any){
-        let picker = UIImagePickerController()
-        picker.delegate = self
-        picker.sourceType = .photoLibrary
-        present(picker, animated: true, completion: nil)
+        presentImagePicker("photoLibrary")
     }
     
     @IBAction func openCamera(_ sender: Any){
+        presentImagePicker("camera")
+    }
+    
+    
+    func presentImagePicker(_ sourceType: String){
         let picker = UIImagePickerController()
         picker.delegate = self
-        picker.sourceType = .camera
+        switch sourceType {
+        case "camera":
+            picker.sourceType = .camera
+        case "photoLibrary":
+            picker.sourceType = .photoLibrary
+        default:
+            break
+        }
         present(picker, animated: true, completion: nil)
     }
     
@@ -102,7 +118,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     @objc func keyboardWillShow(_ notification:Notification) {
         if bottomTextField.isEditing {
-            view.frame.origin.y -= getKeyboardHeight(notification)
+            view.frame.origin.y = -getKeyboardHeight(notification)
         }
     }
     @objc func keyboardWillHide(_ notification:Notification) {
@@ -117,8 +133,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     //MARK: create a meme image
     func generateMemedImage() -> UIImage {
         //hide toolbar
-        self.topToolbar.isHidden = true
-        self.bottomToolbar.isHidden = true
+        topToolbar.isHidden = true
+        bottomToolbar.isHidden = true
         
         // Render view to an image
         UIGraphicsBeginImageContext(self.view.frame.size)
@@ -127,8 +143,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         UIGraphicsEndImageContext()
         
         //show toolbar
-        self.topToolbar.isHidden = false
-        self.bottomToolbar.isHidden = false
+        topToolbar.isHidden = false
+        bottomToolbar.isHidden = false
         
         return memedImage
     }
