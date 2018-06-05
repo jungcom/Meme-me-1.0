@@ -27,7 +27,9 @@ class SentMemesCollectionViewController: UICollectionViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         collectionView!.reloadData()
+        print("We have \(memes.count) in collectionview")
     }
 
     /*
@@ -52,11 +54,16 @@ class SentMemesCollectionViewController: UICollectionViewController {
         let meme = self.memes[(indexPath as NSIndexPath).row]
         
         // Set image and text for the cells
-        //cell.memeImageView.image = meme.memedImage
+        cell.memeImageView?.image = meme.memedImage
 
         return cell
     }
 
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let memeDetailController = storyboard?.instantiateViewController(withIdentifier: "MemeDetailViewController") as! MemeDetailViewController
+        memeDetailController.meme = memes[indexPath.row]
+        navigationController!.pushViewController(memeDetailController, animated: true)
+    }
     // MARK: UICollectionViewDelegate
 
     /*

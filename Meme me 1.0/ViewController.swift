@@ -53,7 +53,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         let memeTextAttributes:[String: Any] = [
             NSAttributedStringKey.strokeColor.rawValue: UIColor.black,
             NSAttributedStringKey.foregroundColor.rawValue: UIColor.white,
-            NSAttributedStringKey.font.rawValue: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!,
+            NSAttributedStringKey.font.rawValue: UIFont(name: "HelveticaNeue-CondensedBlack", size: 60)!,
             NSAttributedStringKey.strokeWidth.rawValue: -2,]
         
         textField.defaultTextAttributes = memeTextAttributes
@@ -130,7 +130,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         return keyboardSize.cgRectValue.height
     }
     
-    //MARK: create a meme image
+    //MARK: Create a meme image
     func generateMemedImage() -> UIImage {
         //hide toolbar
         topToolbar.isHidden = true
@@ -138,6 +138,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         // Render view to an image
         UIGraphicsBeginImageContext(self.view.frame.size)
+        print("frame size is: \(self.view.frame.size)")
         view.drawHierarchy(in: self.view.frame, afterScreenUpdates: true)
         let memedImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
