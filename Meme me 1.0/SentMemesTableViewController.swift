@@ -12,8 +12,8 @@ private let reuseIdentifier = "MemeCell"
 class SentMemesTableViewController: UITableViewController {
     
     var memes: [Meme]! {
-        var object = UIApplication.shared.delegate
-        var appDelegate = object as! AppDelegate
+        let object = UIApplication.shared.delegate
+        let appDelegate = object as! AppDelegate
         return appDelegate.memes
     }
     
@@ -22,15 +22,6 @@ class SentMemesTableViewController: UITableViewController {
         tableView.reloadData()
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        //self.navigationItem.leftBarButtonItem = self.editButtonItem
-    }
-
     // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

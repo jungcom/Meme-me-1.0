@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  MemeEditorViewController.swift
 //  ImagePickerPractice
 //
 //  Created by Anthony Lee on 5/24/18.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
+class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
     
     @IBOutlet weak var image: UIImageView!
     @IBOutlet weak var buttonimage: UIBarButtonItem!
@@ -24,25 +24,19 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        buttoncamera.isEnabled = UIImagePickerController.isSourceTypeAvailable(.camera)
         // Do any additional setup after loading the view, typically from a nib.
-        
-        if image.image == nil {
-            shareButton.isEnabled = false
-            image.backgroundColor = UIColor.black
-        }
-        
-        // MARK: Set Delegates
-        topTextField.delegate = topTextFieldDel
-        bottomTextField.delegate = topTextFieldDel
         
         // Set attributes for textfields
         setAttributeForTextField(topTextField, defaultTextField: "TOP")
         setAttributeForTextField(bottomTextField, defaultTextField: "BOTTOM")
         
     }
+    
     //MARK: Set attributes for TextFields
     func setAttributeForTextField(_ textField: UITextField, defaultTextField: String){
+        //set delegate
+        textField.delegate = topTextFieldDel
+        
         let memeTextAttributes:[String: Any] = [
             NSAttributedStringKey.strokeColor.rawValue: UIColor.black,
             NSAttributedStringKey.foregroundColor.rawValue: UIColor.white,
@@ -92,6 +86,14 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     override func viewWillAppear(_ animated: Bool) {
         
         super.viewWillAppear(animated)
+        // enable or disable camera
+        buttoncamera.isEnabled = UIImagePickerController.isSourceTypeAvailable(.camera)
+        
+        // enable/disable share button
+        if image.image == nil {
+            shareButton.isEnabled = false
+            image.backgroundColor = UIColor.black
+        }
         subscribeToKeyboardNotifications()
     }
     override func viewWillDisappear(_ animated: Bool) {
@@ -111,7 +113,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     @objc func keyboardWillShow(_ notification:Notification) {
         if bottomTextField.isEditing {
-            view.frame.origin.y = -getKeyboardHeight(notification)
+            view.frame.origin.y = -(getKeyboardHeight(notification) - 44)
+        } else if topTextField.isEditing {
+            view.frame.origin.y =  -44
         }
     }
     @objc func keyboardWillHide(_ notification:Notification) {
@@ -126,8 +130,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     //MARK: Create a meme image
     func generateMemedImage() -> UIImage {
         //hide toolbar
-        topToolbar.isHidden = true
-        bottomToolbar.isHidden = true
+        hideToolBar(bool: true)
         
         // Render view to an image
         UIGraphicsBeginImageContext(self.view.frame.size)
@@ -137,10 +140,14 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         UIGraphicsEndImageContext()
         
         //show toolbar
-        topToolbar.isHidden = false
-        bottomToolbar.isHidden = false
+        hideToolBar(bool: false)
         
         return memedImage
+    }
+    
+    func hideToolBar(bool:Bool){
+        topToolbar.isHidden = bool
+        bottomToolbar.isHidden = bool
     }
     
     func save() {
