@@ -8,13 +8,6 @@
 
 import UIKit
 
-struct Meme{
-    let topText: String
-    let bottomText: String
-    let originalImage: UIImage
-    let memedImage: UIImage
-}
-
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
     
     @IBOutlet weak var image: UIImageView!
@@ -178,5 +171,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBAction func cancel(_ sender:Any){
         dismiss(animated: true, completion: nil)
     }
+
 }
 
